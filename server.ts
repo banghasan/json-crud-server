@@ -30,10 +30,7 @@ type DataItem = {
 // Helper function to write individual data file
 async function writeIndividualDataFile(id: string, data: any): Promise<void> {
   const filePath = `${DATA_DIR}/${id}.json`;
-  await Deno.writeTextFile(
-    filePath,
-    JSON.stringify({ ...data, createdAt: new Date().toISOString() }, null, 2),
-  );
+  await Deno.writeTextFile(filePath, JSON.stringify(data, null, 2));
 }
 
 // Helper function to delete individual data file
@@ -147,6 +144,27 @@ const authMiddleware = async (c: any, next: any) => {
 app.use("*", async (c, next) => {
   await next();
   console.log(`${c.req.method} ${c.req.url} -> ${c.res.status}`);
+});
+
+// Root route
+app.get("/", (c) => {
+  return c.text(
+    "A simple web service for handling CRUD operations on JSON data",
+  );
+});
+
+// Favicon route
+app.get("/favicon.ico", async (c) => {
+  try {
+    const file = await Deno.open("./favicon.ico", { read: true });
+    return new Response(file.readable, {
+      headers: {
+        "Content-Type": "image/x-icon",
+      },
+    });
+  } catch (error) {
+    return c.json({ error: "Favicon not found" }, 404);
+  }
 });
 
 // GET /json - Get all json (public)
