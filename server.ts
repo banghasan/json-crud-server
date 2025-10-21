@@ -187,9 +187,14 @@ app.get("/json", async (c) => {
 app.get("/json/:id", async (c) => {
   try {
     const id = c.req.param("id");
+    const pretty = c.req.query("pretty") === "true";
 
     // First, check in-memory store
     if (dataStore[id]) {
+      if (pretty) {
+        c.header("Content-Type", "application/json");
+        return c.body(JSON.stringify(dataStore[id], null, 2));
+      }
       return c.json(dataStore[id]);
     }
 
@@ -198,6 +203,11 @@ app.get("/json/:id", async (c) => {
       const filePath = `${DATA_DIR}/${id}.json`;
       const fileContent = await Deno.readTextFile(filePath);
       const jsonData = JSON.parse(fileContent);
+
+      if (pretty) {
+        c.header("Content-Type", "application/json");
+        return c.body(JSON.stringify(jsonData, null, 2));
+      }
       return c.json(jsonData);
     } catch (fileError) {
       if (fileError instanceof Deno.errors.NotFound) {

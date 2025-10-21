@@ -45,6 +45,8 @@ retention:
 - **GET** `/json/:id`
 - Returns a specific JSON item by its UUID
 - This will return data from memory or from the data directory if the file exists
+- Add `?pretty=true` query parameter to get pretty-printed JSON output
+  - Example: `/json/<UUID>?pretty=true`
 
 ### Authenticated Endpoints (Authentication Required)
 
@@ -97,6 +99,11 @@ curl http://localhost:8000/json
 #### Get a specific item:
 ```bash
 curl http://localhost:8000/json/<UUID>
+```
+
+#### Get a specific item with pretty formatting:
+```bash
+curl http://localhost:8000/json/<UUID>?pretty=true
 ```
 
 #### Update an item partially:
