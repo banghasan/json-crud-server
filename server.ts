@@ -167,26 +167,20 @@ app.get("/favicon.ico", async (c) => {
   }
 });
 
-// GET /json - Get all json (public)
-app.get("/json", async (c) => {
+// GET /json - Get all json (requires auth)
+app.get("/json", authMiddleware, async (c) => {
   try {
-    // Start with the in-memory store
-    const result = { ...dataStore };
+    // Get all IDs from the in-memory store
+    const ids = Object.keys(dataStore);
 
     // Read all files in the data directory to include any that might not be in memory
     try {
       for await (const entry of Deno.readDir(DATA_DIR)) {
         if (entry.name.endsWith(".json")) {
           const id = entry.name.slice(0, -5); // Remove '.json' extension to get the ID
-          if (!result[id]) {
+          if (!ids.includes(id)) {
             // Only add if not already in memory
-            try {
-              const filePath = `${DATA_DIR}/${entry.name}`;
-              const fileContent = await Deno.readTextFile(filePath);
-              result[id] = JSON.parse(fileContent);
-            } catch (error) {
-              console.error(`Error reading file ${entry.name}:`, error);
-            }
+            ids.push(id);
           }
         }
       }
@@ -194,7 +188,7 @@ app.get("/json", async (c) => {
       console.error("Error reading data directory:", dirError);
     }
 
-    return c.json(result);
+    return c.json(ids);
   } catch (error) {
     console.error("Error reading data:", error);
     return c.json({ error: "Internal Server Error" }, 500);
