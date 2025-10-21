@@ -9,7 +9,7 @@ data_dir: "./data"
 # Authentication header required for write operations
 auth_header:
   # Value for the Authorization header required for POST, PUT, PATCH, DELETE
-  value: "r4HaS1anYAbangHaSAN"
+  value: "r4HaS1AbangHaSAN"
 
 # Data retention settings
 retention:
