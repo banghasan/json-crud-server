@@ -1,0 +1,3 @@
+curl -X POST http://localhost:8000/json   -H "Content-Type: application/json"   -H "Authorization: R4HaS1aDapur"   -d '{ "title": "Halo", "content": "Dari Deno Hono 2" }'
+
+buatkan git otomation untuk membuat docker image dan meletakkannya di docker hub

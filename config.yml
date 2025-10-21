@@ -1,0 +1,17 @@
+# Configuration for the JSON CRUD web service
+server:
+  # Port for the web server (default: 8000)
+  port: 8000
+
+# Directory for storing individual JSON files
+data_dir: "./data"
+
+# Authentication header required for write operations
+auth_header:
+  # Value for the Authorization header required for POST, PUT, PATCH, DELETE
+  value: "r4HaS1AbangHaSAN"
+
+# Data retention settings
+retention:
+  # Number of days after which files will be automatically deleted (default: 7)
+  days: 7

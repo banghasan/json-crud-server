@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  json-crud-service:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - AUTH_HEADER=r4HaS1AbangHaSAN
+    volumes:
+      - ./data:/app/data # Mount the data directory to persist JSON files
+      - ./config.yml:/app/config.yml # Mount the config file
+    restart: unless-stopped
