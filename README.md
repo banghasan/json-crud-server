@@ -146,3 +146,23 @@ The service automatically runs a scheduler at 00:00 (midnight) daily in the Asia
 - Each item is stored as both in-memory data and as an individual JSON file in the data directory
 - File names follow the pattern: `data/<UUID>.json`
 - The `createdAt` timestamp is automatically added to each stored item
+
+## Docker Image Automation
+
+This repository is configured with GitHub Actions to automatically build and push Docker images to Docker Hub on every push to the main branch.
+
+### Setting up Docker Hub Integration
+
+To enable automatic Docker image building and pushing:
+
+1. Create a Docker Hub account if you don't have one
+2. Create an access token in your Docker Hub account (Account Settings > Security > Access Tokens)
+3. In your GitHub repository, go to Settings > Secrets and variables > Actions
+4. Add the following secrets:
+   - `DOCKERHUB_USERNAME`: Your Docker Hub username
+   - `DOCKERHUB_TOKEN`: The access token you created in step 2
+
+The workflow will automatically:
+- Build your Docker image when code is pushed to the main branch
+- Tag the image with the branch name, git tag, and commit SHA
+- Push the image to your Docker Hub repository
