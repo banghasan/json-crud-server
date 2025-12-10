@@ -1,18 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>JSON CRUD Server - Simple & Powerful REST API</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>
+            @botIndonesia: JSON CRUD Server - Simple & Powerful REST API
+        </title>
         <meta
             name="description"
             content="Layanan web sederhana untuk operasi CRUD pada data JSON dengan Deno dan Hono"
-        >
-        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
             rel="stylesheet"
-        >
+        />
         <style>
             * {
                 margin: 0;
@@ -37,7 +39,10 @@
 
             body {
                 font-family:
-                    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    "Inter",
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
                     sans-serif;
                 background: linear-gradient(
                     135deg,
@@ -130,7 +135,8 @@
             }
 
             @keyframes pulse {
-                0%, 100% {
+                0%,
+                100% {
                     opacity: 1;
                 }
                 50% {
@@ -524,7 +530,7 @@
                 <div class="header-content">
                     <div class="logo">
                         <div class="logo-icon">{ }</div>
-                        <h1>JSON CRUD Server</h1>
+                        <h1>data @botIndonesia.web.id</h1>
                     </div>
                     <div class="status-badge">
                         <span class="status-dot"></span>
@@ -622,7 +628,8 @@
                     <div class="code-block">
                         <div class="code-header">
                             <span class="code-title"
-                            >📄 docker-compose.yml</span>
+                                >📄 docker-compose.yml</span
+                            >
                             <button
                                 class="copy-btn"
                                 onclick="copyCode('docker-compose')"
@@ -630,9 +637,7 @@
                                 📋 Copy
                             </button>
                         </div>
-                        <pre
-                            id="docker-compose"
-                        >
+                        <pre id="docker-compose">
 <code>version: "3.8"
 services:
   serverjson:
@@ -656,7 +661,8 @@ services:
                     <div class="code-block">
                         <div class="code-header">
                             <span class="code-title"
-                            >🚀 Menjalankan Server</span>
+                                >🚀 Menjalankan Server</span
+                            >
                             <button
                                 class="copy-btn"
                                 onclick="copyCode('run-docker')"
@@ -664,9 +670,7 @@ services:
                                 📋 Copy
                             </button>
                         </div>
-                        <pre
-                            id="run-docker"
-                        >
+                        <pre id="run-docker">
 <code><span class="comment"># Jalankan container di background</span>
 <span class="command">docker-compose up -d</span>
 
@@ -680,7 +684,8 @@ services:
                     <div class="code-block">
                         <div class="code-header">
                             <span class="code-title"
-                            >📝 Konfigurasi (config.yml)</span>
+                                >📝 Konfigurasi (config.yml)</span
+                            >
                             <button
                                 class="copy-btn"
                                 onclick="copyCode('config')"
@@ -688,9 +693,7 @@ services:
                                 📋 Copy
                             </button>
                         </div>
-                        <pre
-                            id="config"
-                        >
+                        <pre id="config">
 <code>server:
   port: 8000
 
@@ -731,7 +734,8 @@ retention:
                         <div class="code-block">
                             <div class="code-header">
                                 <span class="code-title"
-                                >✨ Membuat Item Baru (POST)</span>
+                                    >✨ Membuat Item Baru (POST)</span
+                                >
                                 <button
                                     class="copy-btn"
                                     onclick="copyCode('create-cmd')"
@@ -739,9 +743,7 @@ retention:
                                     📋 Copy
                                 </button>
                             </div>
-                            <pre
-                                id="create-cmd"
-                            >
+                            <pre id="create-cmd">
 <code><span class="command">curl -X POST http://localhost:8000/json \
   -H "Content-Type: application/json" \
   -H "Authorization: r4HaS1AbangHaSAN" \
@@ -765,7 +767,8 @@ retention:
                         <div class="code-block">
                             <div class="code-header">
                                 <span class="code-title"
-                                >📖 Membaca Semua Item (GET)</span>
+                                    >📖 Membaca Semua Item (GET)</span
+                                >
                                 <button
                                     class="copy-btn"
                                     onclick="copyCode('read-all')"
@@ -773,9 +776,7 @@ retention:
                                     📋 Copy
                                 </button>
                             </div>
-                            <pre
-                                id="read-all"
-                            >
+                            <pre id="read-all">
 <code><span class="command">curl http://localhost:8000/json \
   -H "Authorization: r4HaS1AbangHaSAN"</span>
 
@@ -789,7 +790,8 @@ retention:
                         <div class="code-block">
                             <div class="code-header">
                                 <span class="code-title"
-                                >📖 Membaca Item Spesifik (GET)</span>
+                                    >📖 Membaca Item Spesifik (GET)</span
+                                >
                                 <button
                                     class="copy-btn"
                                     onclick="copyCode('read-one')"
@@ -797,9 +799,7 @@ retention:
                                     📋 Copy
                                 </button>
                             </div>
-                            <pre
-                                id="read-one"
-                            >
+                            <pre id="read-one">
 <code><span class="command">curl http://localhost:8000/json/550e8400-e29b-41d4-a716-446655440000</span>
 
 <span class="comment"># Dengan format pretty</span>
@@ -811,7 +811,8 @@ retention:
                         <div class="code-block">
                             <div class="code-header">
                                 <span class="code-title"
-                                >🔄 Update Partial (PATCH)</span>
+                                    >🔄 Update Partial (PATCH)</span
+                                >
                                 <button
                                     class="copy-btn"
                                     onclick="copyCode('patch-cmd')"
@@ -819,9 +820,7 @@ retention:
                                     📋 Copy
                                 </button>
                             </div>
-                            <pre
-                                id="patch-cmd"
-                            >
+                            <pre id="patch-cmd">
 <code><span class="command">curl -X PATCH http://localhost:8000/json/550e8400-e29b-41d4-a716-446655440000 \
   -H "Content-Type: application/json" \
   -H "Authorization: r4HaS1AbangHaSAN" \
@@ -835,7 +834,8 @@ retention:
                         <div class="code-block">
                             <div class="code-header">
                                 <span class="code-title"
-                                >🔄 Replace Complete (PUT)</span>
+                                    >🔄 Replace Complete (PUT)</span
+                                >
                                 <button
                                     class="copy-btn"
                                     onclick="copyCode('put-cmd')"
@@ -843,9 +843,7 @@ retention:
                                     📋 Copy
                                 </button>
                             </div>
-                            <pre
-                                id="put-cmd"
-                            >
+                            <pre id="put-cmd">
 <code><span class="command">curl -X PUT http://localhost:8000/json/550e8400-e29b-41d4-a716-446655440000 \
   -H "Content-Type: application/json" \
   -H "Authorization: r4HaS1AbangHaSAN" \
@@ -862,7 +860,8 @@ retention:
                         <div class="code-block">
                             <div class="code-header">
                                 <span class="code-title"
-                                >🗑️ Menghapus Item (DELETE)</span>
+                                    >🗑️ Menghapus Item (DELETE)</span
+                                >
                                 <button
                                     class="copy-btn"
                                     onclick="copyCode('delete-cmd')"
@@ -870,9 +869,7 @@ retention:
                                     📋 Copy
                                 </button>
                             </div>
-                            <pre
-                                id="delete-cmd"
-                            >
+                            <pre id="delete-cmd">
 <code><span class="command">curl -X DELETE http://localhost:8000/json/550e8400-e29b-41d4-a716-446655440000 \
   -H "Authorization: r4HaS1AbangHaSAN"</span>
 
@@ -908,7 +905,8 @@ retention:
                             Mendapatkan daftar semua ID item JSON
                         </p>
                         <span class="auth-required"
-                        >🔒 Memerlukan Autentikasi</span>
+                            >🔒 Memerlukan Autentikasi</span
+                        >
                     </div>
 
                     <div class="endpoint-card">
@@ -931,7 +929,8 @@ retention:
                             Membuat item JSON baru dengan UUID otomatis
                         </p>
                         <span class="auth-required"
-                        >🔒 Memerlukan Autentikasi</span>
+                            >🔒 Memerlukan Autentikasi</span
+                        >
                     </div>
 
                     <div class="endpoint-card">
@@ -943,7 +942,8 @@ retention:
                             Mengganti item JSON secara lengkap
                         </p>
                         <span class="auth-required"
-                        >🔒 Memerlukan Autentikasi</span>
+                            >🔒 Memerlukan Autentikasi</span
+                        >
                     </div>
 
                     <div class="endpoint-card">
@@ -955,20 +955,23 @@ retention:
                             Update item JSON secara partial
                         </p>
                         <span class="auth-required"
-                        >🔒 Memerlukan Autentikasi</span>
+                            >🔒 Memerlukan Autentikasi</span
+                        >
                     </div>
 
                     <div class="endpoint-card">
                         <div class="endpoint-header">
                             <span class="method-badge method-delete"
-                            >DELETE</span>
+                                >DELETE</span
+                            >
                             <span class="endpoint-path">/json/:id</span>
                         </div>
                         <p class="endpoint-desc">
                             Menghapus item JSON berdasarkan ID
                         </p>
                         <span class="auth-required"
-                        >🔒 Memerlukan Autentikasi</span>
+                            >🔒 Memerlukan Autentikasi</span
+                        >
                     </div>
                 </div>
             </section>
@@ -978,16 +981,21 @@ retention:
             <div class="container">
                 <div class="footer-links">
                     <a
-                        href="https://github.com/banghasan/serverjson"
+                        href="https://github.com/banghasan/json-crud-server"
                         target="_blank"
-                    >GitHub</a>
-                    <a href="/health">Health Check</a>
+                        >GitHub</a
+                    >
                     <a href="https://deno.land" target="_blank">Deno</a>
                     <a href="https://hono.dev" target="_blank">Hono</a>
+                    <a href="https://t.me/botindonesia" target="_blank"
+                        >@botIndonesia</a
+                    >
                 </div>
-                <p>
-                    &copy; 2024 JSON CRUD Server. Built with ❤️ using Deno &
-                    Hono
+                <p class="footer-links">
+                    &copy; 2025,
+                    <a href="https://banghasan.com" target="_blank"
+                        >bangHasan.com</a
+                    >
                 </p>
             </div>
         </footer>
@@ -995,31 +1003,24 @@ retention:
         <script>
             function switchTab(tabName) {
                 // Hide all tab contents
-                document.querySelectorAll(".tab-content")
-                    .forEach((tab) => {
-                        tab.classList.remove("active");
-                    });
+                document.querySelectorAll(".tab-content").forEach((tab) => {
+                    tab.classList.remove("active");
+                });
 
                 // Remove active class from all buttons
-                document.querySelectorAll(".tab-btn").forEach(
-                    (btn) => {
-                        btn.classList.remove("active");
-                    },
-                );
+                document.querySelectorAll(".tab-btn").forEach((btn) => {
+                    btn.classList.remove("active");
+                });
 
                 // Show selected tab
-                document.getElementById(tabName).classList.add(
-                    "active",
-                );
+                document.getElementById(tabName).classList.add("active");
 
                 // Add active class to clicked button
                 event.target.classList.add("active");
             }
 
             function copyCode(elementId) {
-                const code =
-                    document.getElementById(elementId)
-                        .textContent;
+                const code = document.getElementById(elementId).textContent;
                 navigator.clipboard.writeText(code).then(() => {
                     const btn = event.target;
                     const originalText = btn.textContent;

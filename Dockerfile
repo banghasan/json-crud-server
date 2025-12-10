@@ -4,8 +4,8 @@ FROM denoland/deno:2.5.6
 # Set the working directory
 WORKDIR /app
 
-# Copy the server file and config
-COPY server.ts config.yml healthcheck.ts ./
+# Copy the server file, config, and static assets
+COPY server.ts config.yml healthcheck.ts index.html ./
 
 # Cache the dependencies
 RUN deno cache server.ts

@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   serverjson:
-    image: ghcr.io/banghasan/serverjson:latest
+    image: ghcr.io/banghasan/json-crud-server:latest
     container_name: serverjson
     ports:
       - "8000:8000"
