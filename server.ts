@@ -61,6 +61,9 @@ async function ensureDataDir() {
 // Initialize data directory on startup
 await ensureDataDir();
 
+// Track server start time for health reporting
+const startTime = Date.now();
+
 // In-memory storage (would be persistent in a real app with a database)
 let dataStore: { [key: string]: any } = {};
 
@@ -151,6 +154,24 @@ app.get("/", (c) => {
   return c.text(
     "A simple web service for handling CRUD operations on JSON data",
   );
+});
+
+// Health route
+app.get("/health", async (c) => {
+  try {
+    await ensureDataDir();
+    const dirInfo = await Deno.stat(DATA_DIR);
+
+    return c.json({
+      status: "ok",
+      uptimeMs: Date.now() - startTime,
+      dataDir: DATA_DIR,
+      dataDirWritable: dirInfo.isDirectory,
+    });
+  } catch (error) {
+    console.error("Health check failed:", error);
+    return c.json({ status: "error" }, 500);
+  }
 });
 
 // Favicon route

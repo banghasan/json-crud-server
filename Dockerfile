@@ -1,5 +1,5 @@
 # Use the official Deno image
-FROM denoland/deno:2.2.2
+FROM denoland/deno:2.5.6
 
 # Set the working directory
 WORKDIR /app
