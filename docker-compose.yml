@@ -1,7 +1,6 @@
-version: "3.8"
 services:
   serverjson:
-    image: banghasan/serverjson:main
+    image: ghcr.io/banghasan/serverjson:latest
     container_name: serverjson
     ports:
       - "8000:8000"
@@ -10,7 +9,11 @@ services:
     volumes:
       - ./data:/app/data
     healthcheck:
-      test: ["CMD-SHELL", "deno eval --allow-net \"const res = await fetch('http://localhost:8000/health'); if (!res.ok) { console.error('bad status', res.status); Deno.exit(1); }\""]
+      test:
+        [
+          "CMD-SHELL",
+          'deno eval --allow-net "const res = await fetch(''http://localhost:8000/health''); if (!res.ok) { console.error(''bad status'', res.status); Deno.exit(1); }"',
+        ]
       interval: 30s
       timeout: 5s
       retries: 3
