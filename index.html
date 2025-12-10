@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>JSON CRUD Server - Simple & Powerful REST API</title>
+        <meta
+            name="description"
+            content="Layanan web sederhana untuk operasi CRUD pada data JSON dengan Deno dan Hono"
+        >
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        >
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            :root {
+                --bg-primary: #0a0e27;
+                --bg-secondary: #151932;
+                --bg-card: #1a1f3a;
+                --accent-primary: #6366f1;
+                --accent-secondary: #8b5cf6;
+                --accent-tertiary: #ec4899;
+                --text-primary: #f8fafc;
+                --text-secondary: #cbd5e1;
+                --text-muted: #94a3b8;
+                --border-color: #2d3250;
+                --success: #10b981;
+                --warning: #f59e0b;
+            }
+
+            body {
+                font-family:
+                    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    sans-serif;
+                background: linear-gradient(
+                    135deg,
+                    var(--bg-primary) 0%,
+                    #0f1629 100%
+                );
+                color: var(--text-primary);
+                line-height: 1.6;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 2rem;
+            }
+
+            /* Header */
+            header {
+                padding: 2rem 0;
+                border-bottom: 1px solid var(--border-color);
+                background: rgba(26, 31, 58, 0.5);
+                backdrop-filter: blur(10px);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            .header-content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .logo-icon {
+                width: 48px;
+                height: 48px;
+                background: linear-gradient(
+                    135deg,
+                    var(--accent-primary),
+                    var(--accent-secondary)
+                );
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                font-weight: bold;
+                box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+            }
+
+            .logo h1 {
+                font-size: 1.5rem;
+                font-weight: 700;
+                background: linear-gradient(
+                    135deg,
+                    var(--accent-primary),
+                    var(--accent-tertiary)
+                );
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .status-badge {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.5rem 1rem;
+                background: rgba(16, 185, 129, 0.1);
+                border: 1px solid var(--success);
+                border-radius: 50px;
+                font-size: 0.875rem;
+                color: var(--success);
+            }
+
+            .status-dot {
+                width: 8px;
+                height: 8px;
+                background: var(--success);
+                border-radius: 50%;
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0%, 100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.5;
+                }
+            }
+
+            /* Hero Section */
+            .hero {
+                padding: 4rem 0;
+                text-align: center;
+            }
+
+            .hero h2 {
+                font-size: 3rem;
+                font-weight: 700;
+                margin-bottom: 1rem;
+                background: linear-gradient(
+                    135deg,
+                    var(--text-primary),
+                    var(--text-secondary)
+                );
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .hero p {
+                font-size: 1.25rem;
+                color: var(--text-secondary);
+                max-width: 600px;
+                margin: 0 auto 2rem;
+            }
+
+            .hero-buttons {
+                display: flex;
+                gap: 1rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                padding: 0.875rem 2rem;
+                border-radius: 8px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                border: none;
+                cursor: pointer;
+                font-size: 1rem;
+            }
+
+            .btn-primary {
+                background: linear-gradient(
+                    135deg,
+                    var(--accent-primary),
+                    var(--accent-secondary)
+                );
+                color: white;
+                box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 30px rgba(99, 102, 241, 0.6);
+            }
+
+            .btn-secondary {
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--text-primary);
+                border: 1px solid var(--border-color);
+            }
+
+            .btn-secondary:hover {
+                background: rgba(255, 255, 255, 0.1);
+                border-color: var(--accent-primary);
+            }
+
+            /* Features Section */
+            .features {
+                padding: 4rem 0;
+            }
+
+            .section-title {
+                text-align: center;
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: 3rem;
+            }
+
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 2rem;
+            }
+
+            .feature-card {
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 2rem;
+                transition: all 0.3s ease;
+            }
+
+            .feature-card:hover {
+                transform: translateY(-5px);
+                border-color: var(--accent-primary);
+                box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+            }
+
+            .feature-icon {
+                width: 56px;
+                height: 56px;
+                background: linear-gradient(
+                    135deg,
+                    var(--accent-primary),
+                    var(--accent-secondary)
+                );
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 28px;
+                margin-bottom: 1.5rem;
+            }
+
+            .feature-card h3 {
+                font-size: 1.25rem;
+                margin-bottom: 0.75rem;
+                color: var(--text-primary);
+            }
+
+            .feature-card p {
+                color: var(--text-muted);
+                line-height: 1.6;
+            }
+
+            /* Code Section */
+            .code-section {
+                padding: 4rem 0;
+            }
+
+            .code-tabs {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 2rem;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .tab-btn {
+                padding: 1rem 2rem;
+                background: transparent;
+                border: none;
+                color: var(--text-muted);
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border-bottom: 2px solid transparent;
+            }
+
+            .tab-btn.active {
+                color: var(--accent-primary);
+                border-bottom-color: var(--accent-primary);
+            }
+
+            .tab-content {
+                display: none;
+            }
+
+            .tab-content.active {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .code-block {
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+                position: relative;
+            }
+
+            .code-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+            }
+
+            .code-title {
+                color: var(--text-secondary);
+                font-weight: 600;
+                font-size: 0.875rem;
+            }
+
+            .copy-btn {
+                padding: 0.5rem 1rem;
+                background: rgba(99, 102, 241, 0.1);
+                border: 1px solid var(--accent-primary);
+                border-radius: 6px;
+                color: var(--accent-primary);
+                cursor: pointer;
+                font-size: 0.875rem;
+                transition: all 0.3s ease;
+            }
+
+            .copy-btn:hover {
+                background: rgba(99, 102, 241, 0.2);
+            }
+
+            pre {
+                margin: 0;
+                overflow-x: auto;
+                font-family: "Courier New", monospace;
+                font-size: 0.875rem;
+                line-height: 1.6;
+            }
+
+            code {
+                color: var(--text-secondary);
+            }
+
+            .command {
+                color: var(--accent-primary);
+            }
+
+            .string {
+                color: #10b981;
+            }
+
+            .comment {
+                color: var(--text-muted);
+                font-style: italic;
+            }
+
+            /* API Endpoints */
+            .endpoints {
+                padding: 4rem 0;
+            }
+
+            .endpoint-card {
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+                transition: all 0.3s ease;
+            }
+
+            .endpoint-card:hover {
+                border-color: var(--accent-primary);
+            }
+
+            .endpoint-header {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .method-badge {
+                padding: 0.25rem 0.75rem;
+                border-radius: 6px;
+                font-weight: 600;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+            }
+
+            .method-get {
+                background: rgba(16, 185, 129, 0.1);
+                color: var(--success);
+                border: 1px solid var(--success);
+            }
+
+            .method-post {
+                background: rgba(99, 102, 241, 0.1);
+                color: var(--accent-primary);
+                border: 1px solid var(--accent-primary);
+            }
+
+            .method-put {
+                background: rgba(245, 158, 11, 0.1);
+                color: var(--warning);
+                border: 1px solid var(--warning);
+            }
+
+            .method-patch {
+                background: rgba(139, 92, 246, 0.1);
+                color: var(--accent-secondary);
+                border: 1px solid var(--accent-secondary);
+            }
+
+            .method-delete {
+                background: rgba(239, 68, 68, 0.1);
+                color: #ef4444;
+                border: 1px solid #ef4444;
+            }
+
+            .endpoint-path {
+                font-family: "Courier New", monospace;
+                color: var(--text-primary);
+                font-weight: 600;
+            }
+
+            .endpoint-desc {
+                color: var(--text-muted);
+                font-size: 0.875rem;
+            }
+
+            .auth-required {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.25rem 0.75rem;
+                background: rgba(239, 68, 68, 0.1);
+                border: 1px solid #ef4444;
+                border-radius: 6px;
+                font-size: 0.75rem;
+                color: #ef4444;
+                margin-top: 0.5rem;
+            }
+
+            /* Footer */
+            footer {
+                padding: 3rem 0;
+                border-top: 1px solid var(--border-color);
+                text-align: center;
+                color: var(--text-muted);
+            }
+
+            .footer-links {
+                display: flex;
+                gap: 2rem;
+                justify-content: center;
+                margin-bottom: 1rem;
+            }
+
+            .footer-links a {
+                color: var(--text-secondary);
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+            .footer-links a:hover {
+                color: var(--accent-primary);
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .hero h2 {
+                    font-size: 2rem;
+                }
+
+                .hero p {
+                    font-size: 1rem;
+                }
+
+                .section-title {
+                    font-size: 2rem;
+                }
+
+                .code-tabs {
+                    overflow-x: auto;
+                }
+
+                .header-content {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <div class="logo-icon">{ }</div>
+                        <h1>JSON CRUD Server</h1>
+                    </div>
+                    <div class="status-badge">
+                        <span class="status-dot"></span>
+                        Server Online
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="container">
+                    <h2>REST API Sederhana & Powerful</h2>
+                    <p>
+                        Layanan web modern untuk operasi CRUD pada data JSON,
+                        dibangun dengan Deno dan Hono. Cepat, aman, dan mudah
+                        digunakan.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#docker" class="btn btn-primary">
+                            🐳 Mulai dengan Docker
+                        </a>
+                        <a href="#api" class="btn btn-secondary">
+                            📖 Dokumentasi API
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="features">
+                <div class="container">
+                    <h2 class="section-title">Fitur Unggulan</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h3>Performa Tinggi</h3>
+                            <p>
+                                Dibangun dengan Deno runtime yang cepat dan
+                                efisien, menggunakan framework Hono untuk
+                                routing yang optimal.
+                            </p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔒</div>
+                            <h3>Autentikasi Aman</h3>
+                            <p>
+                                Operasi write (POST, PUT, PATCH, DELETE)
+                                dilindungi dengan authorization header untuk
+                                keamanan data.
+                            </p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">💾</div>
+                            <h3>Penyimpanan File</h3>
+                            <p>
+                                Setiap item JSON disimpan sebagai file
+                                individual, memudahkan backup dan migrasi data.
+                            </p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔄</div>
+                            <h3>Auto Cleanup</h3>
+                            <p>
+                                Pembersihan otomatis file lama setiap hari pada
+                                pukul 00:00 WIB untuk menghemat storage.
+                            </p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🌐</div>
+                            <h3>CORS Support</h3>
+                            <p>
+                                Mendukung Cross-Origin Resource Sharing untuk
+                                integrasi dengan aplikasi web dari domain
+                                berbeda.
+                            </p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⚙️</div>
+                            <h3>Konfigurasi YAML</h3>
+                            <p>
+                                Konfigurasi mudah melalui file YAML untuk port,
+                                direktori data, dan pengaturan retention.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="docker" class="code-section">
+                <div class="container">
+                    <h2 class="section-title">
+                        Menjalankan dengan Docker Compose
+                    </h2>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title"
+                            >📄 docker-compose.yml</span>
+                            <button
+                                class="copy-btn"
+                                onclick="copyCode('docker-compose')"
+                            >
+                                📋 Copy
+                            </button>
+                        </div>
+                        <pre
+                            id="docker-compose"
+                        >
+<code>version: "3.8"
+services:
+  serverjson:
+    image: ghcr.io/banghasan/json-crud-server:latest
+    container_name: serverjson
+    ports:
+      - "8000:8000"
+    environment:
+      - AUTH_HEADER=r4HaS1AbangHaSAN
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "deno", "run", "--allow-net", "/app/healthcheck.ts"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped</code></pre>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title"
+                            >🚀 Menjalankan Server</span>
+                            <button
+                                class="copy-btn"
+                                onclick="copyCode('run-docker')"
+                            >
+                                📋 Copy
+                            </button>
+                        </div>
+                        <pre
+                            id="run-docker"
+                        >
+<code><span class="comment"># Jalankan container di background</span>
+<span class="command">docker-compose up -d</span>
+
+<span class="comment"># Lihat logs</span>
+<span class="command">docker-compose logs -f</span>
+
+<span class="comment"># Hentikan container</span>
+<span class="command">docker-compose down</span></code></pre>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title"
+                            >📝 Konfigurasi (config.yml)</span>
+                            <button
+                                class="copy-btn"
+                                onclick="copyCode('config')"
+                            >
+                                📋 Copy
+                            </button>
+                        </div>
+                        <pre
+                            id="config"
+                        >
+<code>server:
+  port: 8000
+
+data_dir: "./data"
+
+auth_header:
+  value: "r4HaS1AbangHaSAN"
+
+retention:
+  days: 7  <span class="comment"># File akan dihapus otomatis setelah 7 hari</span></code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="api" class="code-section">
+                <div class="container">
+                    <h2 class="section-title">Contoh Penggunaan dengan cURL</h2>
+
+                    <div class="code-tabs">
+                        <button
+                            class="tab-btn active"
+                            onclick="switchTab('create')"
+                        >
+                            Create
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('read')">
+                            Read
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('update')">
+                            Update
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('delete')">
+                            Delete
+                        </button>
+                    </div>
+
+                    <div id="create" class="tab-content active">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title"
+                                >✨ Membuat Item Baru (POST)</span>
+                                <button
+                                    class="copy-btn"
+                                    onclick="copyCode('create-cmd')"
+                                >
+                                    📋 Copy
+                                </button>
+                            </div>
+                            <pre
+                                id="create-cmd"
+                            >
+<code><span class="command">curl -X POST http://localhost:8000/json \
+  -H "Content-Type: application/json" \
+  -H "Authorization: r4HaS1AbangHaSAN" \
+  -d '{
+    "title": "Contoh Item",
+    "content": "Ini adalah contoh konten",
+    "author": "Bang Hasan",
+    "tags": ["example", "demo"]
+  }'</span>
+
+<span class="comment"># Response:</span>
+{
+  <span class="string">"id"</span>: <span class="string">"550e8400-e29b-41d4-a716-446655440000"</span>,
+  <span class="string">"url"</span>: <span class="string">"http://localhost:8000/json/550e8400-e29b-41d4-a716-446655440000"</span>,
+  <span class="string">"data"</span>: { ... }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div id="read" class="tab-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title"
+                                >📖 Membaca Semua Item (GET)</span>
+                                <button
+                                    class="copy-btn"
+                                    onclick="copyCode('read-all')"
+                                >
+                                    📋 Copy
+                                </button>
+                            </div>
+                            <pre
+                                id="read-all"
+                            >
+<code><span class="command">curl http://localhost:8000/json \
+  -H "Authorization: r4HaS1AbangHaSAN"</span>
+
+<span class="comment"># Response: Array of IDs</span>
+[
+  <span class="string">"550e8400-e29b-41d4-a716-446655440000"</span>,
+  <span class="string">"6ba7b810-9dad-11d1-80b4-00c04fd430c8"</span>
+]</code></pre>
+                        </div>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title"
+                                >📖 Membaca Item Spesifik (GET)</span>
+                                <button
+                                    class="copy-btn"
+                                    onclick="copyCode('read-one')"
+                                >
+                                    📋 Copy
+                                </button>
+                            </div>
+                            <pre
+                                id="read-one"
+                            >
+<code><span class="command">curl http://localhost:8000/json/550e8400-e29b-41d4-a716-446655440000</span>
+
+<span class="comment"># Dengan format pretty</span>
+<span class="command">curl http://localhost:8000/json/550e8400-e29b-41d4-a716-446655440000?pretty=true</span></code></pre>
+                        </div>
+                    </div>
+
+                    <div id="update" class="tab-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title"
+                                >🔄 Update Partial (PATCH)</span>
+                                <button
+                                    class="copy-btn"
+                                    onclick="copyCode('patch-cmd')"
+                                >
+                                    📋 Copy
+                                </button>
+                            </div>
+                            <pre
+                                id="patch-cmd"
+                            >
+<code><span class="command">curl -X PATCH http://localhost:8000/json/550e8400-e29b-41d4-a716-446655440000 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: r4HaS1AbangHaSAN" \
+  -d '{
+    "content": "Konten yang sudah diupdate"
+  }'</span>
+
+<span class="comment"># Hanya field yang dikirim yang akan diupdate</span></code></pre>
+                        </div>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title"
+                                >🔄 Replace Complete (PUT)</span>
+                                <button
+                                    class="copy-btn"
+                                    onclick="copyCode('put-cmd')"
+                                >
+                                    📋 Copy
+                                </button>
+                            </div>
+                            <pre
+                                id="put-cmd"
+                            >
+<code><span class="command">curl -X PUT http://localhost:8000/json/550e8400-e29b-41d4-a716-446655440000 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: r4HaS1AbangHaSAN" \
+  -d '{
+    "title": "Judul Baru",
+    "content": "Konten baru lengkap"
+  }'</span>
+
+<span class="comment"># Seluruh data akan diganti dengan data baru</span></code></pre>
+                        </div>
+                    </div>
+
+                    <div id="delete" class="tab-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title"
+                                >🗑️ Menghapus Item (DELETE)</span>
+                                <button
+                                    class="copy-btn"
+                                    onclick="copyCode('delete-cmd')"
+                                >
+                                    📋 Copy
+                                </button>
+                            </div>
+                            <pre
+                                id="delete-cmd"
+                            >
+<code><span class="command">curl -X DELETE http://localhost:8000/json/550e8400-e29b-41d4-a716-446655440000 \
+  -H "Authorization: r4HaS1AbangHaSAN"</span>
+
+<span class="comment"># Response:</span>
+{
+  <span class="string">"message"</span>: <span class="string">"Json deleted successfully"</span>
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="endpoints">
+                <div class="container">
+                    <h2 class="section-title">API Endpoints</h2>
+
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method-badge method-get">GET</span>
+                            <span class="endpoint-path">/health</span>
+                        </div>
+                        <p class="endpoint-desc">
+                            Health check endpoint untuk monitoring status server
+                        </p>
+                    </div>
+
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method-badge method-get">GET</span>
+                            <span class="endpoint-path">/json</span>
+                        </div>
+                        <p class="endpoint-desc">
+                            Mendapatkan daftar semua ID item JSON
+                        </p>
+                        <span class="auth-required"
+                        >🔒 Memerlukan Autentikasi</span>
+                    </div>
+
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method-badge method-get">GET</span>
+                            <span class="endpoint-path">/json/:id</span>
+                        </div>
+                        <p class="endpoint-desc">
+                            Mendapatkan item JSON spesifik berdasarkan ID
+                            (Public)
+                        </p>
+                    </div>
+
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method-badge method-post">POST</span>
+                            <span class="endpoint-path">/json</span>
+                        </div>
+                        <p class="endpoint-desc">
+                            Membuat item JSON baru dengan UUID otomatis
+                        </p>
+                        <span class="auth-required"
+                        >🔒 Memerlukan Autentikasi</span>
+                    </div>
+
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method-badge method-put">PUT</span>
+                            <span class="endpoint-path">/json/:id</span>
+                        </div>
+                        <p class="endpoint-desc">
+                            Mengganti item JSON secara lengkap
+                        </p>
+                        <span class="auth-required"
+                        >🔒 Memerlukan Autentikasi</span>
+                    </div>
+
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method-badge method-patch">PATCH</span>
+                            <span class="endpoint-path">/json/:id</span>
+                        </div>
+                        <p class="endpoint-desc">
+                            Update item JSON secara partial
+                        </p>
+                        <span class="auth-required"
+                        >🔒 Memerlukan Autentikasi</span>
+                    </div>
+
+                    <div class="endpoint-card">
+                        <div class="endpoint-header">
+                            <span class="method-badge method-delete"
+                            >DELETE</span>
+                            <span class="endpoint-path">/json/:id</span>
+                        </div>
+                        <p class="endpoint-desc">
+                            Menghapus item JSON berdasarkan ID
+                        </p>
+                        <span class="auth-required"
+                        >🔒 Memerlukan Autentikasi</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="container">
+                <div class="footer-links">
+                    <a
+                        href="https://github.com/banghasan/serverjson"
+                        target="_blank"
+                    >GitHub</a>
+                    <a href="/health">Health Check</a>
+                    <a href="https://deno.land" target="_blank">Deno</a>
+                    <a href="https://hono.dev" target="_blank">Hono</a>
+                </div>
+                <p>
+                    &copy; 2024 JSON CRUD Server. Built with ❤️ using Deno &
+                    Hono
+                </p>
+            </div>
+        </footer>
+
+        <script>
+            function switchTab(tabName) {
+                // Hide all tab contents
+                document.querySelectorAll(".tab-content")
+                    .forEach((tab) => {
+                        tab.classList.remove("active");
+                    });
+
+                // Remove active class from all buttons
+                document.querySelectorAll(".tab-btn").forEach(
+                    (btn) => {
+                        btn.classList.remove("active");
+                    },
+                );
+
+                // Show selected tab
+                document.getElementById(tabName).classList.add(
+                    "active",
+                );
+
+                // Add active class to clicked button
+                event.target.classList.add("active");
+            }
+
+            function copyCode(elementId) {
+                const code =
+                    document.getElementById(elementId)
+                        .textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    const btn = event.target;
+                    const originalText = btn.textContent;
+                    btn.textContent = "✅ Copied!";
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 2000);
+                });
+            }
+        </script>
+    </body>
+</html>

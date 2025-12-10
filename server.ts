@@ -149,11 +149,17 @@ app.use("*", async (c, next) => {
   console.log(`${c.req.method} ${c.req.url} -> ${c.res.status}`);
 });
 
-// Root route
-app.get("/", (c) => {
-  return c.text(
-    "A simple web service for handling CRUD operations on JSON data",
-  );
+// Root route - serve landing page
+app.get("/", async (c) => {
+  try {
+    const html = await Deno.readTextFile("./index.html");
+    return c.html(html);
+  } catch (error) {
+    console.error("Error serving index.html:", error);
+    return c.text(
+      "A simple web service for handling CRUD operations on JSON data",
+    );
+  }
 });
 
 // Health route
